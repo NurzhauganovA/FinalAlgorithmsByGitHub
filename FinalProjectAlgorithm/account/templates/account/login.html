@@ -1,0 +1,35 @@
+{% extends 'main/base.html' %}
+
+
+{% block title %}sign in{% endblock %}
+
+
+{% block content %}
+
+    <div class="section_main_container_register_form section_main_container_register_form_sign_in">
+        <div class="main_container_register_form main_container_register_form_sign_in">
+            <div class="register_form_title">
+                <h1>Sign In</h1>
+                <p>You can <a href="{% url 'account_register' %}">register</a></p>
+            </div>
+            <form method="POST">
+                {% csrf_token %}
+                <label for="username">
+                    <input type="text" name="username" placeholder="Username">
+                </label>
+                <label for="password">
+                    <input type="password" name="password" placeholder="Password">
+                </label>
+                <label for="login">
+                    <input type="submit" value="Login" name="login">
+                </label>
+            </form>
+            <span>
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </span>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,98 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="CssUnknownTarget" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <Languages>
+        <language minSize="172" name="Python" />
+      </Languages>
+    </inspection_tool>
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="2">
+            <item index="0" class="java.lang.String" itemvalue="blank" />
+            <item index="1" class="java.lang.String" itemvalue="mask-type" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="10">
+            <item index="0" class="java.lang.String" itemvalue="nobr" />
+            <item index="1" class="java.lang.String" itemvalue="noembed" />
+            <item index="2" class="java.lang.String" itemvalue="comment" />
+            <item index="3" class="java.lang.String" itemvalue="noscript" />
+            <item index="4" class="java.lang.String" itemvalue="embed" />
+            <item index="5" class="java.lang.String" itemvalue="script" />
+            <item index="6" class="java.lang.String" itemvalue="h4" />
+            <item index="7" class="java.lang.String" itemvalue="div" />
+            <item index="8" class="java.lang.String" itemvalue="button" />
+            <item index="9" class="java.lang.String" itemvalue="option" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="PyBroadExceptionInspection" enabled="true" level="INFORMATION" enabled_by_default="true" />
+    <inspection_tool class="PyPep8Inspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="E722" />
+          <option value="W292" />
+          <option value="W605" />
+          <option value="E501" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="N801" />
+          <option value="N802" />
+          <option value="N806" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyShadowingBuiltinsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredNames">
+        <list>
+          <option value="filter" />
+          <option value="id" />
+          <option value="sum" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="news.forms.*" />
+          <option value="cinema.forms.ChoiceInput" />
+          <option value="django.contrib.auth.forms.ModelForm" />
+          <option value="django.contrib.auth.forms.ImageField" />
+          <option value="account.forms.modelForm" />
+          <option value="django.db.models.permalink" />
+          <option value="music.serializers.ModelSerializer" />
+          <option value="music.models.Album.likes" />
+          <option value="SecondProjectDjango.news.models.Articles.objects" />
+          <option value="bool.add" />
+          <option value="canteen.models.Basket.objects" />
+          <option value="datetime.date.datetime" />
+          <option value="drink.models.Drink.objects" />
+          <option value="eat.models.Eat.*" />
+          <option value="cx_Oracle" />
+          <option value="canteen.models.OnlineOrdering.objects" />
+          <option value="canteen.models.Comment.objects" />
+          <option value="canteen.models.BasketOrders.objects" />
+          <option value="list.split" />
+          <option value="telebot.*" />
+          <option value="raw_input" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
