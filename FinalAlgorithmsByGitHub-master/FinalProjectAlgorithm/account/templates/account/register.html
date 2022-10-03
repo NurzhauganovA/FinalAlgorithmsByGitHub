@@ -1,0 +1,59 @@
+{% extends 'main/base.html' %}
+
+
+{% block title %}register account{% endblock %}
+
+
+{% block content %}
+
+    <div class="section_main_container_register_form">
+        <div class="main_container_register_form">
+            <div class="register_form_title">
+                <h1>Register</h1>
+                <p>You can <a href="{% url 'account_login' %}">sign in</a></p>
+            </div>
+            <form method="POST">
+                {% csrf_token %}
+                <label for="username">
+                    <input type="text" name="username" placeholder="Username">
+                </label>
+                <label for="email">
+                    <input type="email" name="email" placeholder="Email">
+                </label>
+                <label for="first_name">
+                    <input type="text" name="first_name" placeholder="First Name">
+                </label>
+                <label for="last_name">
+                    <input type="text" name="last_name" placeholder="Last Name">
+                </label>
+                <label for="age">
+                    <input type="number" name="age" placeholder="Age">
+                </label>
+                <label for="gender">
+                    <select name="gender">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </label>
+                <label for="phone_number">
+                    <input type="number" name="phone_number" placeholder="Phone Number">
+                </label>
+                <label for="password1">
+                    <input type="password" name="password1" placeholder="Password">
+                </label>
+                <label for="password2">
+                    <input type="password" name="password2" placeholder="Repeat Password">
+                </label>
+                <label for="register">
+                    <input type="submit" value="Register" name="register">
+                </label>
+            </form>
+            <span>
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </span>
+        </div>
+    </div>
+
+{% endblock %}
