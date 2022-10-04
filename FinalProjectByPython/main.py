@@ -1,10 +1,22 @@
+import datetime
+from pprint import pprint
+
+user_data = []
+post_data = []
+global post_id
+post_id = 0
+request_user = ''
+
+
 def displayMenu():
+    global post_id
     print('\n********** Welcome to ErenArminMikasa *********\n')
     print(''
           '1 - Login page\n'
           '2 - Posts\n'
           '3 - My subscribers\n'
           '4 - My subscriptions\n'
+          '5 - Show all users\n'
           '0 - Quit'
           '\n')
 
@@ -13,30 +25,22 @@ def displayMenu():
         return LoginPage()
     elif choose == '2':
         return PostPage()
+    elif choose == '5':
+        print(user_data)
 
 
 def LoginPage():
-    user_data = [
-        {
-            'email': '',
-            'password': '',
-            'name': '',
-            'surname': '',
-            'age': '',
-            'gender': '',
-            'phone_number': ''
-        }
-    ]
-
-    status = ''
 
     def displayUserMenu():
-        status = input('\n1 - Register\n2 - Sign In\n3 - Quit\n')
+        status = input('\n'
+                       '1 - Register\n'
+                       '2 - Sign In\n'
+                       '0 - Quit\n')
         if status == '1':
             newUser()
         elif status == '2':
             oldUser()
-        else:
+        elif status == '0':
             return displayMenu()
 
     def newUser():
@@ -52,46 +56,41 @@ def LoginPage():
             test = True
         else:
             print('\n********** Password must be greater than 8 and less than 20!!! **********')
-            test = False
-            newUser()
+            create_password = input('\nCreate user password: \n')
         create_name = input('\nCreate user name: \n')
         if create_name.isalpha():
             test = True
         else:
             print('\n********** Enter your name correctly!!! **********')
-            test = False
-            newUser()
+            create_name = input('\nCreate user name: \n')
         create_surname = input('\nCreate user surname: \n')
         if create_surname.isalpha():
             test = True
         else:
             print('\n********** Enter your surname correctly!!! **********')
-            test = False
-            newUser()
+            create_surname = input('\nCreate user surname: \n')
         create_age = input('\nCreate user age: \n')
         if create_age.isnumeric():
             test = True
         else:
             print('\n********** Age must be number!!! **********')
-            test = False
-            newUser()
+            create_age = input('\nCreate user age: \n')
         create_gender = input('\nCreate user gender: (Gender must be Male or Female)\n')
         if create_gender in 'Male' or create_gender in 'Female':
             test = True
         else:
             print('\n********** Gender must be Male or Female!!! **********')
-            test = False
-            newUser()
+            create_gender = input('\nCreate user gender: \n')
         create_phone_number = input('\nCreate user phone number: \n')
         if create_phone_number.isdigit() or create_phone_number.isnumeric():
             test = True
         else:
             print('\n********** Phone number must be a number!!! **********')
-            test = False
-            newUser()
+            create_phone_number = input('\nCreate user phone number: \n')
         if test:
+            user_created_data = datetime.datetime.now()
             print(
-                '\n******************\nUser created: \n' + f'Email address: {create_email}' + "\n" + f'Password: {create_password}' + "\n" + f'Name: {create_name}' + "\n" + f'Surname: {create_surname}' + "\n" + f'Age: {create_age}' + "\n" + f'Gender: {create_gender}' + "\n" + f'Phone number: {create_phone_number}' + '\n*******************')
+                '\n******************\nUser created: \n' + f'Email address: {create_email}' + "\n" + f'Password: {create_password}' + "\n" + f'Name: {create_name}' + "\n" + f'Surname: {create_surname}' + "\n" + f'Age: {create_age}' + "\n" + f'Gender: {create_gender}' + "\n" + f'Phone number: {create_phone_number}' + '\n\n' + f'User created data: {user_created_data}' + '\n' + '*******************')
 
             create_user = {
                 'email': create_email,
@@ -100,29 +99,148 @@ def LoginPage():
                 'surname': create_surname,
                 'age': create_age,
                 'gender': create_gender,
-                'phone_number': create_phone_number
+                'phone_number': create_phone_number,
+                'user_created_data': user_created_data
             }
             user_data.append(create_user)
             return displayMenu()
 
     def oldUser():
+        global request_user
         email = input('Enter your email address: \n')
         password = input('Enter your password: \n')
         test = True
 
         for user in user_data:
-            if email in user['email'] and password in user['password']:
-                print('\nLogin successful!')
+            if email == user['email'] and password == user['password']:
+                print('\nLogin successful!\n')
                 test = False
         if test:
             print("\n********** User doesn't exist or wrong email/password **********")
+            return LoginPage()
         else:
+            request_user = email
+            print('Requesting user: ' + request_user)
             return displayMenu()
     return displayUserMenu()
 
 
 def PostPage():
-    print('Hello')
+    global post_id
+
+    if request_user == '':
+        print('\nYou must sign in to account!\n'
+              '1 - Continue\n'
+              '0 - Quit\n')
+        choose = input('Enter your choice: ')
+        if choose == '1':
+            return LoginPage()
+        elif choose == '0':
+            return PostPage()
+    else:
+
+        def displayPostMenu():
+
+            print('\n'
+                  '1 - Post list\n'
+                  '2 - Create post\n'
+                  '3 - Delete post\n'
+                  '0 - Quit'
+                  '\n')
+
+            choose = input('Choose post menu: ')
+            if choose == '1':
+                return ViewListPost()
+            elif choose == '2':
+                return CreatePost()
+            elif choose == '3':
+                return DeletePost()
+            elif choose == '0':
+                return displayMenu()
+
+        def ViewListPost():
+            if len(post_data) < 1:
+                print('\n********** Post data is empty! You can create a new post! **********\n')
+                print('1 - Continue\n0 - Quit\n')
+                choose = input('Enter your choice: ')
+                if choose == '1':
+                    return CreatePost()
+                elif choose == '0':
+                    return PostPage()
+            else:
+                pprint(post_data)
+                return PostPage()
+
+        def CreatePost():
+            global post_id
+            if request_user == '':
+                print('\nYou must sign in to account!\n'
+                      '1 - Continue\n'
+                      '0 - Quit\n')
+                choose = input('Enter your choice: ')
+                if choose == '1':
+                    return LoginPage()
+                elif choose == '0':
+                    return PostPage()
+            else:
+                post_id += 1
+                post_title = input('Post title: \n')
+                post_description = input('Post description: \n')
+                post_created_data = datetime.datetime.now()
+                post_author = request_user
+
+                print('Post created:\nPost id: ' + str(post_id) + '\nPost author: ' + post_author + '\nPost title: ' + post_title + '\nPost description: ' + post_description + '\nPost created date: ' + str(post_created_data))
+
+                create_post = {
+                    'post_id': post_id,
+                    'post_author': post_author,
+                    'post_title': post_title,
+                    'post_description': post_description,
+                    'post_created_date': post_created_data
+                }
+
+                post_data.append(create_post)
+                return displayPostMenu()
+
+        def DeletePost():
+            my_post = []
+            print('\n'
+                  'You can only delete your posts.\n'
+                  'Select the post you want to delete.'
+                  '\n')
+
+            for post in post_data:
+                if post['post_author'] == request_user:
+                    my_post.append(post)
+                    print("\n" + f'Post id: {post["post_id"]}\nPost title: {post["post_title"]}\nPost description: {post["post_description"]}\nPost created date: {post["post_created_date"]}' + "\n")
+
+            if len(my_post) == 0:
+                print("\nYou don't have post.\nBut you can create a post!\n"
+                      "1 - Continue\n"
+                      "0 - Quit\n")
+                choose = input('Enter your choice: ')
+                if choose == '1':
+                    return CreatePost()
+                elif choose == '0':
+                    return PostPage()
+            try:
+                choose = int(input('Select the post you want to delete by ID: \n'))
+                for post in post_data:
+                    if choose == post['post_id']:
+                        post_data.remove(post)
+                        print(f'\nYou deleted post: {post["post_id"]}\n')
+                        return PostPage()
+                else:
+                    print('\n'
+                          'We have declared a mistake somewhere!\n'
+                          'Check it out again, please!'
+                          '\n')
+                    return PostPage()
+            except Exception as e:
+                print(e)
+                return PostPage()
+
+        return displayPostMenu()
 
 
 if __name__ == '__main__':
