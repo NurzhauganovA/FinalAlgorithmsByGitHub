@@ -1,10 +1,17 @@
 import datetime
-from pprint import pprint
 
 user_data = []
 post_data = []
+comment_post_data = []
 post_id = 0
+like_post = [
+    {
+        'user_id': '',
+        'post_id': ''
+    }
+]
 request_user = ''
+request_post = ''
 global choose
 
 
@@ -172,8 +179,45 @@ def PostPage():
                 elif choose == '0':
                     return PostPage()
             else:
-                pprint(post_data)
-                return PostPage()
+                if len(like_post) > 1:
+                    for post in post_data:
+                        for like in like_post:
+                            for user in user_data:
+                                if post['post_id'] == like['post_id'] and like['user_id'] == user['email']:
+                                    print("\n" +
+                                          f'Post id: {post["post_id"]}\n'
+                                          f'Post title: {post["post_title"]}\n'
+                                          f'Post description: {post["post_description"]}\n'
+                                          f'Post created date: {post["post_created_date"]}\n'
+                                          f'Post count of like: {len(like)}'
+                                          "\n")
+                else:
+                    for post in post_data:
+                        print("\n" +
+                              f'Post id: {post["post_id"]}\n'
+                              f'Post title: {post["post_title"]}\n'
+                              f'Post description: {post["post_description"]}\n'
+                              f'Post created date: {post["post_created_date"]}'
+                              "\n")
+                print('********** You can view post detail **********\n')
+                print('1 - Continue\n0 - Quit\n')
+                choose = input('Enter your choice: ')
+                if choose == '1':
+                    for post in post_data:
+                        print("\n" +
+                              f'Post id: {post["post_id"]}\n'
+                              f'Post title: {post["post_title"]}\n'
+                              f'Post description: {post["post_description"]}\n'
+                              f'Post created date: {post["post_created_date"]}' +
+                              "\n")
+                    choose = int(input('\nChoose which post you want to see in detail: '))
+                    for post in post_data:
+                        if choose == post['post_id']:
+                            return DetailPost(post['post_id'])
+                elif choose == '0':
+                    return PostPage()
+                else:
+                    return PostPage()
 
         def CreatePost():
             global post_id
@@ -246,6 +290,43 @@ def PostPage():
             except Exception as e:
                 print(e)
                 return PostPage()
+
+        def DetailPost(post_id_detail):
+            global choose, request_post
+            request_post = post_id_detail
+            for post in post_data:
+                if post['post_id'] == request_post:
+                    print(f'\n'
+                          f'Post id: {post["post_id"]}\n'
+                          f'Post author: {post["post_author"]}\n'
+                          f'Post title: {post["post_title"]}\n'
+                          f'Post description: {post["post_description"]}\n'
+                          f'Post created data: {post["post_created_date"]}\n'
+                          f'\n')
+            print('**********\n'
+                  '1 - Add like for this post\n'
+                  '2 - Remove like at this post\n'
+                  '3 - Add comment for this post\n'
+                  '4 - Remove comment at this post\n'
+                  ''
+                  '**********\n')
+            choose = input('Enter your choice: ')
+            if choose == '1':
+                for like in like_post:
+                    if request_post == like['post_id'] and request_user == like['user_id']:
+                        print('\n********** You can not add like for this post! **********\n')
+                        return PostPage()
+                like_post.append(
+                    {
+                        'user_id': request_user,
+                        'post_id': request_post
+                    }
+                )
+                print('\nYou successfully added like for this post!\n')
+                return PostPage()
+            elif choose == '2':
+                print(like_post)
+            return PostPage()
 
         return displayPostMenu()
 
