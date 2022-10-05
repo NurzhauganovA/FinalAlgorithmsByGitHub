@@ -3,13 +3,14 @@ from pprint import pprint
 
 user_data = []
 post_data = []
-global post_id
 post_id = 0
 request_user = ''
+global choose
 
 
 def displayMenu():
     global post_id
+    global choose
     print('\n********** Welcome to ErenArminMikasa *********\n')
     print(''
           '1 - Login page\n'
@@ -127,6 +128,7 @@ def LoginPage():
 
 def PostPage():
     global post_id
+    global choose
 
     if request_user == '':
         print('\nYou must sign in to account!\n'
@@ -140,6 +142,7 @@ def PostPage():
     else:
 
         def displayPostMenu():
+            global choose
 
             print('\n'
                   '1 - Post list\n'
@@ -159,6 +162,7 @@ def PostPage():
                 return displayMenu()
 
         def ViewListPost():
+            global choose
             if len(post_data) < 1:
                 print('\n********** Post data is empty! You can create a new post! **********\n')
                 print('1 - Continue\n0 - Quit\n')
@@ -173,6 +177,7 @@ def PostPage():
 
         def CreatePost():
             global post_id
+            global choose
             if request_user == '':
                 print('\nYou must sign in to account!\n'
                       '1 - Continue\n'
@@ -203,6 +208,7 @@ def PostPage():
                 return displayPostMenu()
 
         def DeletePost():
+            global choose
             my_post = []
             print('\n'
                   'You can only delete your posts.\n'
@@ -226,10 +232,11 @@ def PostPage():
             try:
                 choose = int(input('Select the post you want to delete by ID: \n'))
                 for post in post_data:
-                    if choose == post['post_id']:
-                        post_data.remove(post)
-                        print(f'\nYou deleted post: {post["post_id"]}\n')
-                        return PostPage()
+                    for my_p in my_post:
+                        if choose == post['post_id'] and choose == my_p['post_id']:
+                            post_data.remove(post)
+                            print(f'\nYou deleted post: {post["post_id"]}\n')
+                            return PostPage()
                 else:
                     print('\n'
                           'We have declared a mistake somewhere!\n'
