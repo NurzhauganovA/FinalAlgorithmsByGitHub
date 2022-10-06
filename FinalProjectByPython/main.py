@@ -4,12 +4,7 @@ user_data = []
 post_data = []
 comment_post_data = []
 post_id = 0
-like_post = [
-    {
-        'user_id': '',
-        'post_id': ''
-    }
-]
+like_post = []
 request_user = ''
 request_post = ''
 global choose
@@ -38,7 +33,6 @@ def displayMenu():
 
 
 def LoginPage():
-
     def displayUserMenu():
         status = input('\n'
                        '1 - Register\n'
@@ -130,6 +124,7 @@ def LoginPage():
             request_user = email
             print('Requesting user: ' + request_user)
             return displayMenu()
+
     return displayUserMenu()
 
 
@@ -179,26 +174,19 @@ def PostPage():
                 elif choose == '0':
                     return PostPage()
             else:
-                if len(like_post) > 1:
+                for post_like, like in like_post:
                     for post in post_data:
-                        for like in like_post:
-                            for user in user_data:
-                                if post['post_id'] == like['post_id'] and like['user_id'] == user['email']:
-                                    print("\n" +
-                                          f'Post id: {post["post_id"]}\n'
-                                          f'Post title: {post["post_title"]}\n'
-                                          f'Post description: {post["post_description"]}\n'
-                                          f'Post created date: {post["post_created_date"]}\n'
-                                          f'Post count of like: {len(like)}'
-                                          "\n")
-                else:
-                    for post in post_data:
-                        print("\n" +
-                              f'Post id: {post["post_id"]}\n'
-                              f'Post title: {post["post_title"]}\n'
-                              f'Post description: {post["post_description"]}\n'
-                              f'Post created date: {post["post_created_date"]}'
-                              "\n")
+                        try:
+                            if like['post_id'] == post['post_id'] and post_like == post['post_id']:
+                                print("\n" +
+                                      f'Post id: {post["post_id"]}\n'
+                                      f'Post title: {post["post_title"]}\n'
+                                      f'Post description: {post["post_description"]}\n'
+                                      f'Post created date: {post["post_created_date"]}\n'
+                                      f'Post count of like: {len(like)}'
+                                      "\n")
+                        except Exception as e:
+                            print(e)
                 print('********** You can view post detail **********\n')
                 print('1 - Continue\n0 - Quit\n')
                 choose = input('Enter your choice: ')
@@ -238,17 +226,25 @@ def PostPage():
                 post_created_data = datetime.datetime.now()
                 post_author = request_user
 
-                print('Post created:\nPost id: ' + str(post_id) + '\nPost author: ' + post_author + '\nPost title: ' + post_title + '\nPost description: ' + post_description + '\nPost created date: ' + str(post_created_data))
+                print('\nPost created:\nPost id: ' + str(post_id) + '\nPost author: ' + post_author + '\nPost title: ' + post_title + '\nPost description: ' + post_description + '\nPost created date: ' + str(
+                    post_created_data))
 
                 create_post = {
-                    'post_id': post_id,
+                    'post_id': int(post_id),
                     'post_author': post_author,
                     'post_title': post_title,
                     'post_description': post_description,
                     'post_created_date': post_created_data
                 }
 
+                add_like_post = {
+                    'user_id': post_author,
+                    'post_id': int(post_id)
+                }
+
                 post_data.append(create_post)
+                like_post.append(add_like_post)
+
                 return displayPostMenu()
 
         def DeletePost():
@@ -262,7 +258,8 @@ def PostPage():
             for post in post_data:
                 if post['post_author'] == request_user:
                     my_post.append(post)
-                    print("\n" + f'Post id: {post["post_id"]}\nPost title: {post["post_title"]}\nPost description: {post["post_description"]}\nPost created date: {post["post_created_date"]}' + "\n")
+                    print(
+                        "\n" + f'Post id: {post["post_id"]}\nPost title: {post["post_title"]}\nPost description: {post["post_description"]}\nPost created date: {post["post_created_date"]}' + "\n")
 
             if len(my_post) == 0:
                 print("\nYou don't have post.\nBut you can create a post!\n"
