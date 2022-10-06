@@ -2,9 +2,9 @@ import datetime
 
 user_data = []
 post_data = []
+like_post = []
 comment_post_data = []
 post_id = 0
-like_post = []
 request_user = ''
 request_post = ''
 global choose
@@ -39,9 +39,9 @@ def LoginPage():
                        '2 - Sign In\n'
                        '0 - Quit\n')
         if status == '1':
-            newUser()
+            return newUser()
         elif status == '2':
-            oldUser()
+            return oldUser()
         elif status == '0':
             return displayMenu()
 
@@ -52,7 +52,7 @@ def LoginPage():
         for user in user_data:
             if create_email in user['email']:
                 print('\n********** Email address already exists: ' + create_email + ' **********')
-                displayUserMenu()
+                return displayUserMenu()
         create_password = input('\nCreate user password: (password must have greater than 8 and less than 20)\n')
         if 8 <= len(create_password) <= 20:
             test = True
@@ -140,7 +140,7 @@ def PostPage():
         if choose == '1':
             return LoginPage()
         elif choose == '0':
-            return PostPage()
+            return displayMenu()
     else:
 
         def displayPostMenu():
@@ -165,7 +165,7 @@ def PostPage():
 
         def ViewListPost():
             global choose
-            if len(post_data) < 1:
+            if len(post_data) == 0:
                 print('\n********** Post data is empty! You can create a new post! **********\n')
                 print('1 - Continue\n0 - Quit\n')
                 choose = input('Enter your choice: ')
@@ -262,7 +262,7 @@ def PostPage():
                         "\n" + f'Post id: {post["post_id"]}\nPost title: {post["post_title"]}\nPost description: {post["post_description"]}\nPost created date: {post["post_created_date"]}' + "\n")
 
             if len(my_post) == 0:
-                print("\nYou don't have post.\nBut you can create a post!\n"
+                print("\nYou don't have post.\nBut you can create a new post!\n"
                       "1 - Continue\n"
                       "0 - Quit\n")
                 choose = input('Enter your choice: ')
