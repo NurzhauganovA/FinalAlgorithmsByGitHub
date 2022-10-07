@@ -1,12 +1,35 @@
 import datetime
 
-user_data = []
+user_data = [
+    {
+        'email': '200103257@stu.sdu.edu.kz',
+        'password': 'Anvarbek2003',
+        'name': 'Anvarbek',
+        'surname': 'Nurzhauganov',
+        'age': '19',
+        'gender': 'Male',
+        'phone_number': '87076098760',
+        'user_created_data': datetime.datetime.now(),
+        'subscribers': []
+    },
+    {
+        'email': '200103271@stu.sdu.edu.kz',
+        'password': 'Aisana2003',
+        'name': 'Aisana',
+        'surname': 'Jumadilova',
+        'age': '19',
+        'gender': 'Female',
+        'phone_number': '87076098760',
+        'user_created_data': datetime.datetime.now(),
+        'subscribers': []
+    }
+]
 post_data = []
-like_post = []
-comment_post_data = []
 post_id = 0
+comment_id = 0
 request_user = ''
 request_post = ''
+request_subscriber = ''
 global choose
 
 
@@ -17,9 +40,8 @@ def displayMenu():
     print(''
           '1 - Login page\n'
           '2 - Posts\n'
-          '3 - My subscribers\n'
-          '4 - My subscriptions\n'
-          '5 - Show all users\n'
+          '3 - My subscriptions\n'
+          '4 - My subscribers\n'
           '0 - Quit'
           '\n')
 
@@ -28,8 +50,8 @@ def displayMenu():
         return LoginPage()
     elif choose == '2':
         return PostPage()
-    elif choose == '5':
-        print(user_data)
+    elif choose == '3':
+        return displayMySubscriptions()
 
 
 def LoginPage():
@@ -102,7 +124,8 @@ def LoginPage():
                 'age': create_age,
                 'gender': create_gender,
                 'phone_number': create_phone_number,
-                'user_created_data': user_created_data
+                'user_created_data': user_created_data,
+                'subscribers': []
             }
             user_data.append(create_user)
             return displayMenu()
@@ -130,6 +153,7 @@ def LoginPage():
 
 def PostPage():
     global post_id
+    global comment_id
     global choose
 
     if request_user == '':
@@ -174,19 +198,18 @@ def PostPage():
                 elif choose == '0':
                     return PostPage()
             else:
-                for post_like, like in like_post:
-                    for post in post_data:
-                        try:
-                            if like['post_id'] == post['post_id'] and post_like == post['post_id']:
-                                print("\n" +
-                                      f'Post id: {post["post_id"]}\n'
-                                      f'Post title: {post["post_title"]}\n'
-                                      f'Post description: {post["post_description"]}\n'
-                                      f'Post created date: {post["post_created_date"]}\n'
-                                      f'Post count of like: {len(like)}'
-                                      "\n")
-                        except Exception as e:
-                            print(e)
+                for post in post_data:
+                    try:
+                        print("\n" +
+                              f'Post id: {post["post_id"]}\n'
+                              f'Post title: {post["post_title"]}\n'
+                              f'Post description: {post["post_description"]}\n'
+                              f'Post created date: {post["post_created_date"]}\n'
+                              f'Post count of like: {len(post["like"])}\n'
+                              f'Post count of comments: {len(post["comment"])}'
+                              "\n")
+                    except Exception as e:
+                        print(e)
                 print('********** You can view post detail **********\n')
                 print('1 - Continue\n0 - Quit\n')
                 choose = input('Enter your choice: ')
@@ -196,7 +219,9 @@ def PostPage():
                               f'Post id: {post["post_id"]}\n'
                               f'Post title: {post["post_title"]}\n'
                               f'Post description: {post["post_description"]}\n'
-                              f'Post created date: {post["post_created_date"]}' +
+                              f'Post created date: {post["post_created_date"]}\n'
+                              f'Count of like: {len(post["like"])}\n'
+                              f'Count of comments: {len(post["comment"])}' +
                               "\n")
                     choose = int(input('\nChoose which post you want to see in detail: '))
                     for post in post_data:
@@ -234,16 +259,12 @@ def PostPage():
                     'post_author': post_author,
                     'post_title': post_title,
                     'post_description': post_description,
-                    'post_created_date': post_created_data
-                }
-
-                add_like_post = {
-                    'user_id': post_author,
-                    'post_id': int(post_id)
+                    'post_created_date': post_created_data,
+                    'like': [],
+                    'comment': []
                 }
 
                 post_data.append(create_post)
-                like_post.append(add_like_post)
 
                 return displayPostMenu()
 
@@ -299,33 +320,232 @@ def PostPage():
                           f'Post title: {post["post_title"]}\n'
                           f'Post description: {post["post_description"]}\n'
                           f'Post created data: {post["post_created_date"]}\n'
+                          f'Count of like: {len(post["like"])}\n'
+                          f'Count of comment: {len(post["comment"])}'
                           f'\n')
+            test = False
+            for post in post_data:
+                if len(post['comment']) > 0 and post['comment'][0] == request_post:
+                    test = True
+            if test:
+                print('********** Comments **********')
+            for post in post_data:
+                for comment in post['comment']:
+                    if post['post_id'] == request_post:
+                        print(f'\n'
+                              f'Comment author: {comment["user_id"]}\n'
+                              f'Comment title: {comment["comment_title"]}\n'
+                              f'Comment description: {comment["comment_description"]}\n'
+                              f'Comment created: {comment["comment_created_date"]}\n'
+                              f'\n******************************\n'
+                              )
             print('**********\n'
                   '1 - Add like for this post\n'
                   '2 - Remove like at this post\n'
                   '3 - Add comment for this post\n'
                   '4 - Remove comment at this post\n'
-                  ''
-                  '**********\n')
+                  '5 - Subscribe the author of this post\n'
+                  '0 - Quit'
+                  '\n**********\n')
             choose = input('Enter your choice: ')
             if choose == '1':
-                for like in like_post:
-                    if request_post == like['post_id'] and request_user == like['user_id']:
-                        print('\n********** You can not add like for this post! **********\n')
-                        return PostPage()
-                like_post.append(
-                    {
-                        'user_id': request_user,
-                        'post_id': request_post
-                    }
-                )
-                print('\nYou successfully added like for this post!\n')
-                return PostPage()
+                return AddLikePost()
             elif choose == '2':
-                print(like_post)
+                return RemoveLikePost()
+            elif choose == '3':
+                return AddCommentPost()
+            elif choose == '4':
+                return RemoveCommentPost()
+            elif choose == '5':
+                return SubscribePostAuthor()
             return PostPage()
 
+        def AddLikePost():
+            for post in post_data:
+                if request_user in post['like'] and post['post_id'] == request_post:
+                    print('\n********** You can not add like for this post! **********\n')
+                    return PostPage()
+                elif post['post_id'] == request_post:
+                    post['like'].append(request_user)
+            print('\nYou have successfully added a like for this post!\n')
+            return ViewListPost()
+
+        def RemoveLikePost():
+            for post in post_data:
+                if request_user in post['like'] and post['post_id'] == request_post:
+                    post['like'].remove(request_user)
+                    print('\nYou have successfully removed a like on this post!\n')
+                    return ViewListPost()
+                elif post['post_id'] == request_post:
+                    print("\nYou haven't liked this post yet\n")
+                    return ViewListPost()
+
+        def AddCommentPost():
+            global comment_id
+            comment_id += 1
+            comment_title = input('Comment title: ')
+            comment_description = input('Comment description: ')
+            comment_created_date = datetime.datetime.now()
+
+            create_comment = {
+                'comment_id': int(comment_id),
+                'user_id': request_user,
+                'comment_post_id': request_post,
+                'comment_title': comment_title,
+                'comment_description': comment_description,
+                'comment_created_date': comment_created_date
+            }
+
+            for post in post_data:
+                if post['post_id'] == request_post:
+                    post['comment'].append(create_comment)
+            print(f'\n**********\nComment created:\n'
+                  f'Comment id: {comment_id}\n'
+                  f'Comment author: {request_user}\n'
+                  f'Comment title: {comment_title}\n'
+                  f'Comment description: {comment_description}\n'
+                  f'\nComment created_date: {comment_created_date}'
+                  f'\n**********\n')
+            print('********** You have successfully created a new comment! **********\n')
+            return ViewListPost()
+
+        def RemoveCommentPost():
+            global choose
+            my_comment = []
+            print('\n'
+                  'You can only delete your comments.\n'
+                  'Select the post you want to delete.'
+                  '\n')
+
+            for post in post_data:
+                for comm in post['comment']:
+                    if comm['user_id'] == request_user:
+                        my_comment.append(comm)
+                        if post['post_id'] == request_post:
+                            print(
+                                "\n" + f'Comment id: {comm["comment_id"]}\nComment title: {comm["comment_title"]}\nComment description: {comm["comment_description"]}\nComment created date: {comm["comment_created_date"]}' + "\n")
+
+            if len(my_comment) == 0:
+                print("\nYou don't have comment.\nBut you can create a new comment!\n"
+                      "1 - Continue\n"
+                      "0 - Quit\n")
+                choose = input('Enter your choice: ')
+                if choose == '1':
+                    return AddCommentPost()
+                elif choose == '0':
+                    return ViewListPost()
+            try:
+                choose = int(input('Select the comment you want to delete by ID: '))
+                for post in post_data:
+                    for my_com in my_comment:
+                        if choose == my_com['comment_id'] and my_com['comment_post_id'] == request_post:
+                            post['comment'].remove(my_com)
+                            my_comment.remove(my_com)
+                            print(f'\nYou deleted comment: {my_com["comment_id"]}\n')
+                            return ViewListPost()
+                print('\n'
+                      'We have declared a mistake somewhere!\n'
+                      'Check it out again, please!'
+                      '\n')
+                return DetailPost(request_post)
+            except Exception as e:
+                print(e)
+                return DetailPost(request_post)
+
+        def SubscribePostAuthor():
+            global choose
+            for post in post_data:
+                if post['post_id'] == request_post:
+                    if post['post_author'] == request_user:
+                        print(f'\n**********\nAuthor of this post: You)\n**********\n')
+                    else:
+                        print(f'\n**********\nAuthor of this post: {post["post_author"]}\n**********\n')
+            print("\nAre you sure you want to follow this author?\n"
+                  "1 - Continue\n"
+                  "0 - Quit\n")
+            choose = input('\nEnter your choice: ')
+            if choose == '1':
+                for post in post_data:
+                    for user in user_data:
+                        if post['post_id'] == request_post and user['email'] == post['post_author']:
+                            if request_user in user['subscribers']:
+                                print('\n********** You are already following this person! **********\n')
+                                return DetailPost(request_post)
+                            elif request_user == post['post_author']:
+                                print("\n********** You can't subscribe to yourself! **********\n")
+                                return DetailPost(request_post)
+                            else:
+                                user['subscribers'].append(request_user)
+                                print('\n********** You have successfully subscribed! **********\n')
+                                return DetailPost(request_post)
+            elif choose == '0':
+                return DetailPost(request_post)
+
         return displayPostMenu()
+
+
+def displayMySubscriptions():
+    global choose
+    test = False
+    for user in user_data:
+        if request_user in user['subscribers']:
+            test = True
+    if test:
+        print('\n********** My subscriptions **********\n')
+    for user in user_data:
+        if request_user in user['subscribers']:
+            print(f'\nUser email: {user["email"]}\n')
+
+    if test:
+        print("\n********** You can view user detail **********\n"
+              "1 - Continue\n"
+              "0 - Quit\n")
+        choose = input('\nEnter your choice: ')
+
+        if choose == '1':
+
+            choose = input('\nEnter email which user you want to see in detail: ')
+            for user in user_data:
+                if request_user in user['subscribers'] and choose == user['email']:
+                    return DetailSubscriber(choose)
+                print('\n'
+                      'We have declared a mistake somewhere!\n'
+                      'Check it out again, please!'
+                      '\n')
+                return displayMySubscriptions()
+        return displayMenu()
+    print("\n********** You haven't subscribed to anyone before! **********")
+
+    return displayMenu()
+
+
+def DetailSubscriber(subscriber_detail):
+    global request_subscriber
+    global choose
+    request_subscriber = subscriber_detail
+
+    for user in user_data:
+        if request_subscriber == user['email']:
+            print(f'\n'
+                  f'User email: {user["email"]}\n'
+                  f'User name: {user["name"]}\n'
+                  f'User surname: {user["surname"]}\n'
+                  f'User age: {user["age"]}\n'
+                  f'User gender: {user["gender"]}'
+                  f'\n')
+
+    print("\n********** Do you want to unsubscribe? **********\n"
+          "1 - Continue\n"
+          "0 - Quit\n")
+    choose = input('\nEnter your choice: ')
+
+    if choose == '1':
+        for user in user_data:
+            if request_user in user['subscribers']:
+                print(f'\nYou have successfully unsubscribed from the user: {user["email"]}\n')
+                user['subscribers'].remove(request_user)
+                return displayMenu()
+    return displayMenu()
 
 
 if __name__ == '__main__':
