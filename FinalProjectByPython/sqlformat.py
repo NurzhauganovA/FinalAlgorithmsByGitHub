@@ -1,7 +1,7 @@
 import sqlite3
 
 
-def main(path):
+def select_objects(path):
 
     conn = ''
 
@@ -46,4 +46,4 @@ def main(path):
 
 
 if __name__ == '__main__':
-    main("C:\Python projects\FinalAlgorithm\FinalProjectAlgorithm\db.sqlite3")
+    select_objects("C:\Python projects\FinalAlgorithm\FinalProjectAlgorithm\db.sqlite3")

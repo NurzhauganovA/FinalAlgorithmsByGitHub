@@ -22,12 +22,23 @@ user_data = [
         'phone_number': '87076098760',
         'user_created_data': datetime.datetime.now(),
         'subscribers': []
+    },
+    {
+        'email': 'zangar@stu.sdu.edu.kz',
+        'password': 'Zangar2004',
+        'name': 'Zangar',
+        'surname': 'Zangar',
+        'age': '18',
+        'gender': 'Male',
+        'phone_number': '87076098760',
+        'user_created_data': datetime.datetime.now(),
+        'subscribers': []
     }
 ]
 post_data = []
 post_id = 0
 comment_id = 0
-request_user = ''
+request_user = '200103257@stu.sdu.edu.kz'
 request_post = ''
 request_subscriber = ''
 global choose
@@ -366,19 +377,26 @@ def PostPage():
                     print('\n********** You can not add like for this post! **********\n')
                     return PostPage()
                 elif post['post_id'] == request_post:
-                    post['like'].append(request_user)
+                    post['like'].append(
+                        {
+                            'user_id': request_user
+                        }
+                    )
             print('\nYou have successfully added a like for this post!\n')
             return ViewListPost()
 
         def RemoveLikePost():
             for post in post_data:
-                if request_user in post['like'] and post['post_id'] == request_post:
-                    post['like'].remove(request_user)
-                    print('\nYou have successfully removed a like on this post!\n')
-                    return ViewListPost()
-                elif post['post_id'] == request_post:
-                    print("\nYou haven't liked this post yet\n")
-                    return ViewListPost()
+                for like in post['like']:
+                    if request_user in like['user_id'] and post['post_id'] == request_post:
+                        post['like'].remove(like)
+                        print('\nYou have successfully removed a like on this post!\n')
+                        return DetailPost(request_post)
+                    elif post['post_id'] == request_post:
+                        print("\nYou haven't liked this post yet\n")
+                        return DetailPost(request_post)
+            print("\nYou haven't liked this post yet\n")
+            return DetailPost(request_post)
 
         def AddCommentPost():
             global comment_id
@@ -421,27 +439,29 @@ def PostPage():
                 for comm in post['comment']:
                     if comm['user_id'] == request_user:
                         my_comment.append(comm)
-                        if post['post_id'] == request_post:
+                        if post['post_id'] == request_post and comm['comment_post_id'] == request_post:
                             print(
                                 "\n" + f'Comment id: {comm["comment_id"]}\nComment title: {comm["comment_title"]}\nComment description: {comm["comment_description"]}\nComment created date: {comm["comment_created_date"]}' + "\n")
 
-            if len(my_comment) == 0:
-                print("\nYou don't have comment.\nBut you can create a new comment!\n"
-                      "1 - Continue\n"
-                      "0 - Quit\n")
-                choose = input('Enter your choice: ')
-                if choose == '1':
-                    return AddCommentPost()
-                elif choose == '0':
-                    return ViewListPost()
+            for post in post_data:
+                for comm in post['comment']:
+                    if comm['user_id'] == request_user and len(comm) == 0:
+                        print("\nYou don't have comment.\nBut you can create a new comment!\n"
+                              "1 - Continue\n"
+                              "0 - Quit\n")
+                        choose = input('Enter your choice: ')
+                        if choose == '1':
+                            return AddCommentPost()
+                        elif choose == '0':
+                            return ViewListPost()
             try:
                 choose = int(input('Select the comment you want to delete by ID: '))
                 for post in post_data:
-                    for my_com in my_comment:
-                        if choose == my_com['comment_id'] and my_com['comment_post_id'] == request_post:
-                            post['comment'].remove(my_com)
-                            my_comment.remove(my_com)
-                            print(f'\nYou deleted comment: {my_com["comment_id"]}\n')
+                    for comm in post['comment']:
+                        if choose == comm['comment_id'] and comm['comment_post_id'] == request_post and comm['user_id'] == request_user:
+                            post['comment'].remove(comm)
+                            my_comment.remove(comm)
+                            print(f'\nYou deleted comment: {comm["comment_id"]}\n')
                             return ViewListPost()
                 print('\n'
                       'We have declared a mistake somewhere!\n'
