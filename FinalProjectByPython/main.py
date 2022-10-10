@@ -1,3 +1,4 @@
+from block_user_linkedlist import LinkedList
 import datetime
 
 user_data = [
@@ -10,7 +11,8 @@ user_data = [
         'gender': 'Male',
         'phone_number': '87076098760',
         'user_created_data': datetime.datetime.now(),
-        'subscribers': []
+        'subscribers': [],
+        'blocked_users': []
     },
     {
         'email': '200103271@stu.sdu.edu.kz',
@@ -21,7 +23,8 @@ user_data = [
         'gender': 'Female',
         'phone_number': '87076098760',
         'user_created_data': datetime.datetime.now(),
-        'subscribers': []
+        'subscribers': [],
+        'blocked_users': []
     },
     {
         'email': 'zangar@stu.sdu.edu.kz',
@@ -32,7 +35,8 @@ user_data = [
         'gender': 'Male',
         'phone_number': '87076098760',
         'user_created_data': datetime.datetime.now(),
-        'subscribers': []
+        'subscribers': [],
+        'blocked_users': []
     }
 ]
 post_data = []
@@ -41,6 +45,7 @@ comment_id = 0
 request_user = '200103257@stu.sdu.edu.kz'
 request_post = ''
 request_subscriber = ''
+block_user_data = LinkedList()
 global choose
 
 
@@ -53,6 +58,7 @@ def displayMenu():
           '2 - Posts\n'
           '3 - My subscriptions\n'
           '4 - My subscribers\n'
+          '5 - My blocking users\n'
           '0 - Quit'
           '\n')
 
@@ -63,6 +69,8 @@ def displayMenu():
         return PostPage()
     elif choose == '3':
         return displayMySubscriptions()
+    elif choose == '5':
+        return displayMyBlockingUsers()
 
 
 def LoginPage():
@@ -136,7 +144,8 @@ def LoginPage():
                 'gender': create_gender,
                 'phone_number': create_phone_number,
                 'user_created_data': user_created_data,
-                'subscribers': []
+                'subscribers': [],
+                'blocked_users': []
             }
             user_data.append(create_user)
             return displayMenu()
@@ -437,14 +446,6 @@ def PostPage():
 
             for post in post_data:
                 for comm in post['comment']:
-                    if comm['user_id'] == request_user:
-                        my_comment.append(comm)
-                        if post['post_id'] == request_post and comm['comment_post_id'] == request_post:
-                            print(
-                                "\n" + f'Comment id: {comm["comment_id"]}\nComment title: {comm["comment_title"]}\nComment description: {comm["comment_description"]}\nComment created date: {comm["comment_created_date"]}' + "\n")
-
-            for post in post_data:
-                for comm in post['comment']:
                     if comm['user_id'] == request_user and len(comm) == 0:
                         print("\nYou don't have comment.\nBut you can create a new comment!\n"
                               "1 - Continue\n"
@@ -454,6 +455,11 @@ def PostPage():
                             return AddCommentPost()
                         elif choose == '0':
                             return ViewListPost()
+                    elif comm['user_id'] == request_user:
+                        my_comment.append(comm)
+                        if post['post_id'] == request_post and comm['comment_post_id'] == request_post:
+                            print(
+                                "\n" + f'Comment id: {comm["comment_id"]}\nComment title: {comm["comment_title"]}\nComment description: {comm["comment_description"]}\nComment created date: {comm["comment_created_date"]}' + "\n")
             try:
                 choose = int(input('Select the comment you want to delete by ID: '))
                 for post in post_data:
@@ -540,6 +546,7 @@ def displayMySubscriptions():
 
 
 def DetailSubscriber(subscriber_detail):
+    global block_user_data
     global request_subscriber
     global choose
     request_subscriber = subscriber_detail
@@ -554,18 +561,34 @@ def DetailSubscriber(subscriber_detail):
                   f'User gender: {user["gender"]}'
                   f'\n')
 
-    print("\n********** Do you want to unsubscribe? **********\n"
-          "1 - Continue\n"
+    print("\n********** Do you want to unsubscribe/block? **********\n"
+          "1 - Unsubscribe\n"
+          "2 - Block user\n"
           "0 - Quit\n")
     choose = input('\nEnter your choice: ')
 
-    if choose == '1':
-        for user in user_data:
+    for user in user_data:
+        block_user_data = user['blocked_users']
+        if choose == '2':
+            if request_user == user['email']:
+                print(f'\n********** You have blocked {request_subscriber} user **********')
+                user['blocked_users'].append(request_subscriber)
             if request_user in user['subscribers']:
-                print(f'\nYou have successfully unsubscribed from the user: {user["email"]}\n')
+                print(f'\n********** Blocked user: {request_subscriber} removed from your list of subscriptions **********')
                 user['subscribers'].remove(request_user)
-                return displayMenu()
+        elif choose == '1' and request_user in user['subscribers']:
+            print(f'\nYou have successfully unsubscribed from the user: {user["email"]}\n')
+            user['subscribers'].remove(request_user)
+            return displayMenu()
     return displayMenu()
+
+
+def displayMyBlockingUsers():
+    global block_user_data
+    for user in user_data:
+        for blocked_users in user['blocked_users']:
+            block_user_data.append(blocked_users)
+    block_user_data.show_list()
 
 
 if __name__ == '__main__':
