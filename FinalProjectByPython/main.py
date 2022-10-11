@@ -11,7 +11,7 @@ user_data = [
         'gender': 'Male',
         'phone_number': '87076098760',
         'user_created_data': datetime.datetime.now(),
-        'subscribers': [],
+        'subscriptions': [],
         'blocked_users': []
     },
     {
@@ -23,7 +23,7 @@ user_data = [
         'gender': 'Female',
         'phone_number': '87076098760',
         'user_created_data': datetime.datetime.now(),
-        'subscribers': [],
+        'subscriptions': [],
         'blocked_users': []
     },
     {
@@ -35,7 +35,7 @@ user_data = [
         'gender': 'Male',
         'phone_number': '87076098760',
         'user_created_data': datetime.datetime.now(),
-        'subscribers': [],
+        'subscriptions': [],
         'blocked_users': []
     }
 ]
@@ -44,7 +44,7 @@ post_id = 0
 comment_id = 0
 request_user = '200103257@stu.sdu.edu.kz'
 request_post = ''
-request_subscriber = ''
+request_subscription = ''
 block_user_data = LinkedList()
 global choose
 
@@ -144,7 +144,7 @@ def LoginPage():
                 'gender': create_gender,
                 'phone_number': create_phone_number,
                 'user_created_data': user_created_data,
-                'subscribers': [],
+                'subscriptions': [],
                 'blocked_users': []
             }
             user_data.append(create_user)
@@ -493,15 +493,15 @@ def PostPage():
             if choose == '1':
                 for post in post_data:
                     for user in user_data:
-                        if post['post_id'] == request_post and user['email'] == post['post_author']:
-                            if request_user in user['subscribers']:
+                        if post['post_id'] == request_post and user['email'] == request_user:
+                            if post['post_author'] in user['subscriptions']:
                                 print('\n********** You are already following this person! **********\n')
                                 return DetailPost(request_post)
                             elif request_user == post['post_author']:
                                 print("\n********** You can't subscribe to yourself! **********\n")
                                 return DetailPost(request_post)
                             else:
-                                user['subscribers'].append(request_user)
+                                user['subscriptions'].append(post['post_author'])
                                 print('\n********** You have successfully subscribed! **********\n')
                                 return DetailPost(request_post)
             elif choose == '0':
@@ -514,13 +514,14 @@ def displayMySubscriptions():
     global choose
     test = False
     for user in user_data:
-        if request_user in user['subscribers']:
+        if request_user == user['email'] and len(user['subscriptions']) != 0:
             test = True
     if test:
         print('\n********** My subscriptions **********\n')
     for user in user_data:
-        if request_user in user['subscribers']:
-            print(f'\nUser email: {user["email"]}\n')
+        for subscription in user['subscriptions']:
+            if request_user == user['email']:
+                print(f'\nUser email: {subscription}')
 
     if test:
         print("\n********** You can view user detail **********\n"
@@ -529,30 +530,29 @@ def displayMySubscriptions():
         choose = input('\nEnter your choice: ')
 
         if choose == '1':
-
             choose = input('\nEnter email which user you want to see in detail: ')
             for user in user_data:
-                if request_user in user['subscribers'] and choose == user['email']:
-                    return DetailSubscriber(choose)
-                print('\n'
-                      'We have declared a mistake somewhere!\n'
-                      'Check it out again, please!'
-                      '\n')
-                return displayMySubscriptions()
+                for subscription in user['subscriptions']:
+                    if subscription == choose:
+                        return DetailSubscription(subscription)
+            print('\n'
+                  'We have declared a mistake somewhere!\n'
+                  'Check it out again, please!'
+                  '\n')
+            return displayMySubscriptions()
         return displayMenu()
     print("\n********** You haven't subscribed to anyone before! **********")
-
     return displayMenu()
 
 
-def DetailSubscriber(subscriber_detail):
+def DetailSubscription(subscription_detail):
     global block_user_data
-    global request_subscriber
+    global request_subscription
     global choose
-    request_subscriber = subscriber_detail
+    request_subscription = subscription_detail
 
     for user in user_data:
-        if request_subscriber == user['email']:
+        if request_subscription == user['email']:
             print(f'\n'
                   f'User email: {user["email"]}\n'
                   f'User name: {user["name"]}\n'
@@ -568,27 +568,24 @@ def DetailSubscriber(subscriber_detail):
     choose = input('\nEnter your choice: ')
 
     for user in user_data:
-        block_user_data = user['blocked_users']
         if choose == '2':
             if request_user == user['email']:
-                print(f'\n********** You have blocked {request_subscriber} user **********')
-                user['blocked_users'].append(request_subscriber)
-            if request_user in user['subscribers']:
-                print(f'\n********** Blocked user: {request_subscriber} removed from your list of subscriptions **********')
-                user['subscribers'].remove(request_user)
-        elif choose == '1' and request_user in user['subscribers']:
+                print(f'\n********** You have blocked {request_subscription} user **********')
+                user['blocked_users'].append(request_subscription)
+            if request_user == user['email'] and request_subscription in user['subscriptions']:
+                print(f'\n********** Blocked user: {request_subscription} removed from your list of subscriptions **********')
+                user['subscriptions'].remove(request_subscription)
+        elif choose == '1' and request_user == user['email'] and request_subscription in user['subscriptions']:
             print(f'\nYou have successfully unsubscribed from the user: {user["email"]}\n')
-            user['subscribers'].remove(request_user)
+            user['subscriptions'].remove(request_subscription)
             return displayMenu()
     return displayMenu()
 
 
 def displayMyBlockingUsers():
-    global block_user_data
     for user in user_data:
-        for blocked_users in user['blocked_users']:
-            block_user_data.append(blocked_users)
-    block_user_data.show_list()
+        if request_user == user['email']:
+            print(user['blocked_users'], "\n")
 
 
 if __name__ == '__main__':

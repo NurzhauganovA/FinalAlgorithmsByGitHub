@@ -5,7 +5,7 @@ class LinkedList(object):
     def __init__(self):
         self.head = None
 
-    def append(self, data):
+    def append_list(self, data):
         new_node = Node(data)
         cur_node = self.head
         if cur_node is None:
