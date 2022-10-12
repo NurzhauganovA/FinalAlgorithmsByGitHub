@@ -1,4 +1,3 @@
-from block_user_linkedlist import LinkedList
 import datetime
 
 user_data = [
@@ -45,7 +44,9 @@ comment_id = 0
 request_user = '200103257@stu.sdu.edu.kz'
 request_post = ''
 request_subscription = ''
-block_user_data = LinkedList()
+request_blocked_user = ''
+dif_posts_blocked_users = []
+posts_blocked_users = []
 global choose
 
 
@@ -70,7 +71,7 @@ def displayMenu():
     elif choose == '3':
         return displayMySubscriptions()
     elif choose == '5':
-        return displayMyBlockingUsers()
+        return displayMyBlockedUsers()
 
 
 def LoginPage():
@@ -209,6 +210,7 @@ def PostPage():
 
         def ViewListPost():
             global choose
+
             if len(post_data) == 0:
                 print('\n********** Post data is empty! You can create a new post! **********\n')
                 print('1 - Continue\n0 - Quit\n')
@@ -219,34 +221,45 @@ def PostPage():
                     return PostPage()
             else:
                 for post in post_data:
-                    try:
-                        print("\n" +
-                              f'Post id: {post["post_id"]}\n'
-                              f'Post title: {post["post_title"]}\n'
-                              f'Post description: {post["post_description"]}\n'
-                              f'Post created date: {post["post_created_date"]}\n'
-                              f'Post count of like: {len(post["like"])}\n'
-                              f'Post count of comments: {len(post["comment"])}'
-                              "\n")
-                    except Exception as e:
-                        print(e)
+                    for user in user_data:
+                        if request_user == user['email'] and post['post_author'] not in user['blocked_users']:
+                            try:
+                                print("\n" +
+                                      f'Post id: {post["post_id"]}\n'
+                                      f'Post title: {post["post_title"]}\n'
+                                      f'Post description: {post["post_description"]}\n'
+                                      f'Post created date: {post["post_created_date"]}\n'
+                                      f'Post count of like: {len(post["like"])}\n'
+                                      f'Post count of comments: {len(post["comment"])}'
+                                      "\n")
+                            except Exception as e:
+                                print(e)
                 print('********** You can view post detail **********\n')
                 print('1 - Continue\n0 - Quit\n')
                 choose = input('Enter your choice: ')
                 if choose == '1':
                     for post in post_data:
-                        print("\n" +
-                              f'Post id: {post["post_id"]}\n'
-                              f'Post title: {post["post_title"]}\n'
-                              f'Post description: {post["post_description"]}\n'
-                              f'Post created date: {post["post_created_date"]}\n'
-                              f'Count of like: {len(post["like"])}\n'
-                              f'Count of comments: {len(post["comment"])}' +
-                              "\n")
+                        for user in user_data:
+                            if request_user == user['email'] and post['post_author'] not in user['blocked_users']:
+                                print("\n" +
+                                      f'Post id: {post["post_id"]}\n'
+                                      f'Post title: {post["post_title"]}\n'
+                                      f'Post description: {post["post_description"]}\n'
+                                      f'Post created date: {post["post_created_date"]}\n'
+                                      f'Count of like: {len(post["like"])}\n'
+                                      f'Count of comments: {len(post["comment"])}' +
+                                      "\n")
                     choose = int(input('\nChoose which post you want to see in detail: '))
                     for post in post_data:
-                        if choose == post['post_id']:
-                            return DetailPost(post['post_id'])
+                        for user in user_data:
+                            if request_user == user['email'] and post['post_author'] not in user['blocked_users'] and choose == post['post_id']:
+                                return DetailPost(post['post_id'])
+                            else:
+                                print('\n'
+                                      'We have declared a mistake somewhere!\n'
+                                      'Check it out again, please!'
+                                      '\n')
+                                return PostPage()
                 elif choose == '0':
                     return PostPage()
                 else:
@@ -546,7 +559,6 @@ def displayMySubscriptions():
 
 
 def DetailSubscription(subscription_detail):
-    global block_user_data
     global request_subscription
     global choose
     request_subscription = subscription_detail
@@ -582,10 +594,69 @@ def DetailSubscription(subscription_detail):
     return displayMenu()
 
 
-def displayMyBlockingUsers():
+def displayMyBlockedUsers():
+    global choose
+    test = False
+
     for user in user_data:
-        if request_user == user['email']:
-            print(user['blocked_users'], "\n")
+        if request_user == user['email'] and len(user['blocked_users']) != 0:
+            test = True
+
+    if test:
+        print('\nMy blocked users:\n')
+
+    for user in user_data:
+        for blocked_user in user['blocked_users']:
+            if request_user == user['email']:
+                print(f'\nUser email: {blocked_user}')
+
+    if test:
+        print("\n********** You can view blocked user detail **********\n"
+              "1 - Continue\n"
+              "0 - Quit\n")
+        choose = input('\nEnter your choice: ')
+
+        if choose == '1':
+            choose = input('\nEnter email which user you want to see in detail: ')
+            for user in user_data:
+                for blocked_user in user['blocked_users']:
+                    if blocked_user == choose:
+                        return DetailBlockedUser(blocked_user)
+            print('\n'
+                  'We have declared a mistake somewhere!\n'
+                  'Check it out again, please!'
+                  '\n')
+            return displayMyBlockedUsers()
+        return displayMenu()
+    print("\n********** You haven't blocked to anyone before! **********")
+    return displayMenu()
+
+
+def DetailBlockedUser(blocked_user_detail):
+    global request_blocked_user
+    global choose
+    request_blocked_user = blocked_user_detail
+
+    for user in user_data:
+        if request_blocked_user == user['email']:
+            print(f'\n'
+                  f'User email: {user["email"]}\n'
+                  f'User name: {user["name"]}\n'
+                  f'User surname: {user["surname"]}\n'
+                  f'User age: {user["age"]}\n'
+                  f'User gender: {user["gender"]}'
+                  f'\n')
+
+    print("\n********** Do you want to unblock? **********\n"
+          "1 - Continue\n"
+          "0 - Quit\n")
+    choose = input('\nEnter your choice: ')
+
+    for user in user_data:
+        if choose == '1' and request_user == user['email'] and request_blocked_user in user['blocked_users']:
+            print(f'\nYou have successfully unblocked: {request_blocked_user}\n')
+            user['blocked_users'].remove(request_subscription)
+    return displayMenu()
 
 
 if __name__ == '__main__':
