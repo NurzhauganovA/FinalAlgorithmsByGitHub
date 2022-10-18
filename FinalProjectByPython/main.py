@@ -75,7 +75,10 @@ def displayMenu():
         return displayMyBlockedUsers()
     elif choose == '6':
         return displayMyProfile()
-    return displayMenu()
+    elif choose == '0':
+        return
+    else:
+        return displayMenu()
 
 
 def LoginPage():
@@ -626,7 +629,7 @@ def mySubscriptionsPage():
         return displayMySubscriptions()
 
     def displayCommonFriends(user_common_friends):
-        global request_subscription
+        global choose, request_subscription, request_user
         request_subscription = user_common_friends
         my_subscriptions = []
         user_subscriptions = []
@@ -648,6 +651,23 @@ def mySubscriptionsPage():
         print(f'\nYou are subscribed to a user:')
         for repeat in repeated:
             print(f'\n{repeat}')
+
+        print("\n********** You can view user detail **********\n"
+              "1 - Continue\n"
+              "0 - Quit\n")
+        choose = input('\nEnter your choice: ')
+
+        if choose == '1':
+            choose = input('\nEnter email which user you want to see in detail: ')
+            for user in user_data:
+                for common in repeated:
+                    if request_user == user['email'] and common not in user['blocked_users'] and common == choose:
+                        return DetailSubscription(common)
+            print('\n'
+                  'We have declared a mistake somewhere!\n'
+                  'Check it out again, please!'
+                  '\n')
+            return displayMySubscriptions()
 
         return displayMenu()
 
