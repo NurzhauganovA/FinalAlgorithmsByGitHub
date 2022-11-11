@@ -1,4 +1,5 @@
 import datetime
+from post_sorting import bubble_sort
 
 """ ========== Adding our basic data ========== """
 user_data = [
@@ -423,11 +424,16 @@ def PostPage():
         def AddLikePost():
             """ Add like to post """
             for post in post_data:
-                if request_user in post['like'] and post['post_id'] == request_post:
+                if [like for like in post['like'] if like['user_id'] == request_user] and post['post_id'] == request_post:
                     print('\n********** You can not add like for this post! **********\n')
-                    return PostPage()  # If the user previously liked this post - Return a back (Posting page)
+                    return ViewListPost()  # If the user previously liked this post - Return a back (Posting page)
                 elif post['post_id'] == request_post:
-                    post['like'].append(request_user)
+                    post['like'].append(
+                        {
+                            'user_id': request_user,
+                            'post_id': request_post
+                        }
+                    )
             print('\nYou have successfully added a like for this post!\n')
             return ViewListPost()  # Return a back (View All Posts / With the exclusion of posts of blocked users)
 
@@ -435,14 +441,15 @@ def PostPage():
             """ Remove like from post """
             for post in post_data:
                 for like in post['like']:
-                    if request_user in like['user_id'] and post['post_id'] == request_post:
+                    if request_user == like['user_id'] and post['post_id'] == request_post:
                         post['like'].remove(like)
                         print('\nYou have successfully removed a like on this post!\n')
                         return DetailPost(request_post)  # After successfully deleting a like from a post Return a back (Detail Post Page)
-                    elif post['post_id'] == request_post:
+                    elif post['post_id'] == request_post and request_user != like['user_id']:
                         print("\nYou haven't liked this post yet\n")
                         return DetailPost(request_post)  # After unsuccessfully deleting a like from a post Return a back (Detail Post Page)
-            print("\nYou haven't liked this post yet\n")
+                    else:
+                        print("\nYou haven't liked this post yet\n")
             return DetailPost(request_post)  # Return a back (Detail Post Page)
 
         def AddCommentPost():
@@ -553,9 +560,18 @@ def PostPage():
 
         def PostListBySorting():
             """ View Posts with Sorted Post List """
-            for post in post_data:
-                for i in range(len(post['like'])):
-                    print(post)
+            global choose, post_data
+            choose = input(
+                '\n1 - With Bubble Sort\n'
+                '2 - With Insertion Sort\n'
+                '3 - With Quick Sort\n'
+                '4 - With Merge Sort\n'
+                '0 - Quit\n'
+                '\nChoose: '
+            )
+            if choose == '1':
+                for post in post_data:
+                    print(bubble_sort(post['like']))
 
         return displayPostMenu()  # Return a back (Display Main Post Menu)
 
