@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, User
 
 
 class CustomUser(AbstractUser):
@@ -34,3 +34,16 @@ class ProfileSettings(models.Model):
         verbose_name = 'Profile'
         verbose_name_plural = 'Profiles'
         db_table = 'user_profile'
+
+
+class SubscribeToAuthorOfPost(models.Model):
+    from_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='request_user')
+    to_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='subscribe_to_user')
+
+    def __str__(self):
+        return f'{self.from_user} subscribed to {self.to_user}!'
+
+    class Meta:
+        verbose_name = 'Subscribe to Author of Post'
+        verbose_name_plural = 'Subscribe to Authors of Post'
+        db_table = 'subscribe_to_author_of_post'

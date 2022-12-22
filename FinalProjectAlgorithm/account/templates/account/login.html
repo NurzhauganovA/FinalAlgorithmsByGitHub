@@ -1,35 +1,63 @@
-{% extends 'main/base.html' %}
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{% static 'account/css/login.css' %}">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErenArminMikasa - Sign In</title>
+</head>
+<body>
+    <section>
+        <div class="sign-up_container">
+            <div class="main_block_sign-up_container">
+                <div class="title_main_block">
+                    <h1>Sign In</h1>
+                    <p>Your Social Campaigns</p>
+                </div>
+                <div class="support_sign-up_main_block">
+                    <a href="" class="with_google_sign-up">
+                        <img src="https://preview.keenthemes.com/metronic8/demo16/assets/media/svg/brand-logos/google-icon.svg" alt="logo_google">
+                        Sign in with Google
+                    </a>
+                    <a href="" class="with_apple_sign-up">
+                        <img class="dark_apple_logo" src="https://preview.keenthemes.com/metronic8/demo16/assets/media/svg/brand-logos/apple-black.svg" alt="logo_apple">
+                        <img class="white_apple_logo" src="https://preview.keenthemes.com/metronic8/demo16/assets/media/svg/brand-logos/apple-black-dark.svg" alt="">
+                        Sign in with Apple
+                    </a>
+                </div>
+                <div class="or_just_with_email">
+                    <p>Or with email</p>
+                </div>
+                <div class="input_forms_sign-up">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <label>
+                            <input type="text" placeholder="Username" name="username" class="form_input_username" autocomplete="off">
+                        </label>
+                        <div class="position-relative">
+                            <label>
+                                <input type="password" placeholder="Password" name="password" class="form_input_password">
+                            </label>
+                        </div>
 
+                        <div class="check_validate_account">
+                            {% for message in messages %}
+                                <p>{{ message }}</p>
+                            {% endfor %}
+                        </div>
 
-{% block title %}sign in{% endblock %}
-
-
-{% block content %}
-
-    <div class="section_main_container_register_form section_main_container_register_form_sign_in">
-        <div class="main_container_register_form main_container_register_form_sign_in">
-            <div class="register_form_title">
-                <h1>Sign In</h1>
-                <p>You can <a href="{% url 'account_register' %}">register</a></p>
+                        <button type="submit" class="form_sign_up_button" id="submit_button">Sign In</button>
+                    </form>
+                </div>
+                <div class="have_account_sign-in">
+                    <p>Not a Member yet? <a href="{% url 'account_register' %}">Sign up</a></p>
+                </div>
             </div>
-            <form method="POST">
-                {% csrf_token %}
-                <label for="username">
-                    <input type="text" name="username" placeholder="Username">
-                </label>
-                <label for="password">
-                    <input type="password" name="password" placeholder="Password">
-                </label>
-                <label for="login">
-                    <input type="submit" value="Login" name="login">
-                </label>
-            </form>
-            <span>
-                {% for message in messages %}
-                    {{ message }}
-                {% endfor %}
-            </span>
         </div>
-    </div>
-
-{% endblock %}
+        <div class="image_container">
+        </div>
+    </section>
+</body>
+</html>

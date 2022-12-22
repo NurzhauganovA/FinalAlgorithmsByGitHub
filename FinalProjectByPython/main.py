@@ -1,5 +1,5 @@
 import datetime
-from post_sorting import bubble_sort
+from post_sorting import postBubbleSort, postMergeSort, postInsertionSort, postQuickSort
 
 """ ========== Adding our basic data ========== """
 user_data = [
@@ -54,7 +54,44 @@ user_data = [
 ]
 
 """ ========== All global variables that we need ========== """
-post_data = []  # Global variable that contains the data of all posts
+post_data = [
+    {
+        'post_id': 1,
+        'post_author': '200103399@stu.sdu.edu.kz',
+        'post_title': 'Title 1',
+        'post_description': 'Description 1',
+        'post_created_date': datetime.datetime.now(),
+        'like': ['max@example.com', 'no@example.com', 'qwerty@example.com'],
+        'comment': []
+    },
+    {
+        'post_id': 2,
+        'post_author': '200103271@stu.sdu.edu.kz',
+        'post_title': 'Title 2',
+        'post_description': 'Description 2',
+        'post_created_date': datetime.datetime.now(),
+        'like': ['no@example.com', 'qwerty@example.com'],
+        'comment': []
+    },
+    {
+        'post_id': 3,
+        'post_author': '200103257@stu.sdu.edu.kz',
+        'post_title': 'Title 3',
+        'post_description': 'Description 3',
+        'post_created_date': datetime.datetime.now(),
+        'like': ['200103257@stu.sdu.edu.kz', '200103271@stu.sdu.edu.kz', '200103399@stu.sdu.edu.kz', 'zangar@stu.sdu.edu.kz'],
+        'comment': []
+    },
+    {
+        'post_id': 4,
+        'post_author': 'zangar@stu.sdu.edu.kz',
+        'post_title': 'Title 4',
+        'post_description': 'Description 4',
+        'post_created_date': datetime.datetime.now(),
+        'like': ['200103257@stu.sdu.edu.kz'],
+        'comment': []
+    }
+]  # Global variable that contains the data of all posts
 post_id = 0  # Global variable that defines the ID of the added posts
 comment_id = 0  # Global variable that defines the ID of the comments added to the post.
 request_user = '200103257@stu.sdu.edu.kz'  # Global variable that defines the User who entered the program
@@ -172,6 +209,7 @@ def LoginPage():
                 'phone_number': create_phone_number,
                 'user_created_data': user_created_data,
                 'subscriptions': [],
+                'friends': [],
                 'blocked_users': []
             }
             user_data.append(create_user)
@@ -264,7 +302,7 @@ def PostPage():
                                   f'Post count of comments: {len(post["comment"])}'
                                   "\n")
                 print('********** You can view post detail and view by sort **********\n')
-                print('1 - View Post Detail\n2 - Post Sort List\n0 - Quit\n')
+                print('1 - View Post Detail\n2 - Post Sort List\n3 - View TOP posts\n0 - Quit\n')
                 choose = input('Enter your choice: ')
                 if choose == '1':
                     choose = int(input('\nChoose which post you want to see in detail: '))
@@ -282,8 +320,40 @@ def PostPage():
                     return PostPage()  # Return a back page (Posting page)
                 elif choose == '2':
                     return PostListBySorting()  # Returns a function that defines posts with sorting
+                elif choose == '3':
+                    return ListTopPosts()  # Returns a list of TOP posts
                 else:
                     return PostPage()  # Return a back page (Posting page)
+
+        def ListTopPosts():
+            global choose, post_data
+            sorted_dict = {}
+
+            try:
+                choose = int(input("You can view top posts! TOP: "))
+            except Exception as e:
+                print(e)
+
+            for post in post_data:
+                sorted_dict[post['post_id']] = len(post['like'])
+
+            sorted_dict = sorted(sorted_dict.items(), key=lambda x: x[1], reverse=True)
+            sorted_dict = sorted_dict[:choose]
+
+            for srtd_dict in sorted_dict:
+                for post in post_data:
+                    if srtd_dict[0] == post['post_id']:
+                        print(f'\n'
+                              f'Post id: {post["post_id"]}\n'
+                              f'Post author: {post["post_author"]}\n'
+                              f'Post title: {post["post_title"]}\n'
+                              f'Post description: {post["post_description"]}\n'
+                              f'Post created data: {post["post_created_date"]}\n'
+                              f'Count of like: {len(post["like"])}\n'
+                              f'Count of comment: {len(post["comment"])}'
+                              f'\n')
+
+            return displayPostMenu()
 
         def CreatePost():
             """ Create a new Post """
@@ -558,22 +628,44 @@ def PostPage():
             elif choose == '0':
                 return DetailPost(request_post)  # Return a back (Detail Post Page)
 
-        def PostListBySorting():
-            """ View Posts with Sorted Post List """
-            global choose, post_data
-            choose = input(
-                '\n1 - With Bubble Sort\n'
-                '2 - With Insertion Sort\n'
-                '3 - With Quick Sort\n'
-                '4 - With Merge Sort\n'
-                '0 - Quit\n'
-                '\nChoose: '
-            )
-            if choose == '1':
-                for post in post_data:
-                    print(bubble_sort(post['like']))
+    def PostListBySorting():
+        """ View Posts with Sorted Post List """
+        global choose, post_data, user_data
+        postlist = []
+        for post in post_data:
+            for user in user_data:
+                if user['email'] == request_user and post['post_author'] not in user['blocked_users']:
+                    postlist.append(post)
 
-        return displayPostMenu()  # Return a back (Display Main Post Menu)
+        choose = input(
+            '\n1 - With Bubble Sort\n'
+            '2 - With Insertion Sort\n'
+            '3 - With Quick Sort\n'
+            '4 - With Merge Sort\n'
+            '0 - Quit\n'
+            '\nChoose: '
+        )
+        if choose == '1':
+            postlist =  postBubbleSort(postlist)
+        elif choose == '2':
+            postlist = postInsertionSort(postlist)
+        elif choose == '3':
+            postlist = postQuickSort(postlist)
+        elif choose == '4':
+            postlist = postMergeSort(postlist)
+
+        for post in postlist:
+            print(f'\n'
+                  f'Post id: {post["post_id"]}\n'
+                  f'Post author: {post["post_author"]}\n'
+                  f'Post title: {post["post_title"]}\n'
+                  f'Post description: {post["post_description"]}\n'
+                  f'Post created data: {post["post_created_date"]}\n'
+                  f'Count of like: {len(post["like"])}\n'
+                  f'Count of comment: {len(post["comment"])}'
+                  f'\n')
+
+    return displayPostMenu()  # Return a back (Display Main Post Menu)
 
 
 def mySubscriptionsPage():

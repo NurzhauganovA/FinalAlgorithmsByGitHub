@@ -7,7 +7,136 @@
 {% block content %}
 
     <div class="section_post_container">
-        ....
+        <div class="main_post_info_section_block">
+            <div class="header_info_main_post_block">
+                <div class="post_header_main_info">
+                    <a href="{% url 'detail_category_post' post.category.id %}" class="post_header_category_block">
+                        <div class="post_category_image" style="background-image: url('{{ post.category.category_image.url }}')"></div>
+                        <span>{{ post.category.title }}</span>
+                    </a>
+                    <div href="" class="post_header_author_block">
+                        <span>{{ post.author.first_name }} {{ post.author.last_name }}</span>
+                    </div>
+                    <div class="post_header_time_duration_block">
+                        <span>{{ post.date_created|date:"h:m, M d, Y" }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="title_info_main_post_block">
+                <h1>{{ post.title }}</h1>
+            </div>
+            <div class="description_info_main_post_block">
+                <p>{{ post.description }}</p>
+            </div>
+            <div class="emotions_info_main_post_block">
+                <a href="" class="about_comments_info_post_block">
+                    <i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#596068" class="bi bi-chat" viewBox="0 0 16 16">
+                            <path d="M2.678 11.894a1 1 0 0 1 .287.801 10.97 10.97 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8.06 8.06 0 0 0 8 14c3.996 0 7-2.807 7-6 0-3.192-3.004-6-7-6S1 4.808 1 8c0 1.468.617 2.83 1.678 3.894zm-.493 3.905a21.682 21.682 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a9.68 9.68 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105z"/>
+                        </svg>
+                    </i>
+                    <h1>Discuss</h1>
+                </a>
+                <div class="about_like_info_post_block">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button class="btn_like_detail_post" type="submit" name="detail_post_like" value="{{ post.id }}">
+                            <i>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#596068" class="bi bi-heart" viewBox="0 0 16 16">
+                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                                </svg>
+                            </i>
+                        </button>
+                    </form>
+                    <h1>5</h1>
+                </div>
+            </div>
+        </div>
+        <div class="image_post_info_section_block">
+            <div class="image" style="background-image: url('{{ post.post_image.url }}')"></div>
+        </div>
+        <div class="emotions_info_main_post_block" style="margin: 20px 0; padding: 0 150px;">
+                <a href="" class="about_comments_info_post_block">
+                    <i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#596068" class="bi bi-chat" viewBox="0 0 16 16">
+                            <path d="M2.678 11.894a1 1 0 0 1 .287.801 10.97 10.97 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8.06 8.06 0 0 0 8 14c3.996 0 7-2.807 7-6 0-3.192-3.004-6-7-6S1 4.808 1 8c0 1.468.617 2.83 1.678 3.894zm-.493 3.905a21.682 21.682 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a9.68 9.68 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105z"/>
+                        </svg>
+                    </i>
+                    <h1>107</h1>
+                </a>
+                <div class="about_like_info_post_block">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button class="btn_like_detail_post" type="submit" name="detail_post_like" value="{{ post.id }}">
+                            <i>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#596068" class="bi bi-heart" viewBox="0 0 16 16">
+                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                                </svg>
+                            </i>
+                        </button>
+                    </form>
+                    <h1>5</h1>
+                </div>
+            </div>
+        <div class="author_post_info_section_block">
+            <div class="author_post_main_personal_info_block">
+                <div class="image_author_post_info_block">
+                    {% for profile in profiles %}
+                        {% if profile.profile_avatar %}
+                            <div class="image_author_post_detail" style="background-image: url('{{ profile.profile_avatar.url }}')"></div>
+                        {% elif profile.gender == 'Female' %}
+                            <div class="image_author_post_detail" style="background-image: url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80')"></div>
+                        {% elif profile.gender == 'Male' %}
+                            <div class="image_author_post_detail" style="background-image: url('https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80')"></div>
+                        {% else %}
+                            <div class="image_author_post_detail" style="background-image: url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80')"></div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="main_info_author_post_info_block">
+                    <h1>{{ post.author.first_name }} {{ post.author.last_name }}</h1>
+                    <p>Blogger</p>
+                </div>
+            </div>
+            <div class="subscribe_author_post_info_block">
+                <form method="POST">
+                    {% csrf_token %}
+                    <button class="subscribe_btn_author" type="submit" name="subscribe_author" value="{{ post.author.id }}">
+                        <i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#FFF" class="bi bi-person-add" viewBox="0 0 16 16">
+                                <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0Zm-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+                                <path d="M8.256 14a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Z"/>
+                            </svg>
+                        </i>
+                        <h1>
+                            Subscribe
+                        </h1>
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
+
+    <div class="all_posts_info_in_detail_post_container">
+        <div class="post_block_header_block_all_posts">
+            <h1>Other posts</h1>
+            <a href="{% url 'create_post' %}">
+                Post
+            </a>
+        </div>
+        {% for some_post in all_posts %}
+            <div class="post_block_info_at_all_posts">
+                <a href="{% url 'detail_post' some_post.id %}">{{ some_post.title |truncatechars:40  }}</a>
+                <a href="{% url 'detail_category_post' some_post.category.id %}" class="some_post_block_info">
+                    <div class="some_post_block_image" style="background-image: url('{{ some_post.category.category_image.url }}')"></div>
+                    <p>{{ some_post.category.title }}</p>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+
+
+
 
 {% endblock %}

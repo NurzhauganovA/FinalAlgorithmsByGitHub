@@ -26,6 +26,9 @@ class Post(models.Model):
     like_post = models.ManyToManyField(CustomUser, verbose_name='Do you like this post?', blank=True, null=True, related_name='like_post')
     view_post = models.ManyToManyField(CustomUser, verbose_name='You viewed this post', blank=True, null=True, related_name='view_post')
 
+    def total_likes(self):
+        return self.like_post.count()
+
     def __str__(self):
         return f'Title: {self.title} <==> Category: {self.category}'
 

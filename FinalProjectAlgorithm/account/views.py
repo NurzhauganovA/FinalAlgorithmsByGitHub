@@ -53,38 +53,24 @@ def AccountLogin(request):
 def AccountRegister(request):
 
     if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        age = request.POST['age']
-        gender = request.POST['gender']
-        phone_number = request.POST['phone_number']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
+        username = request.POST.get('username')
+        password1 = request.POST.get('password')
+        password2 = request.POST.get('confirm_password')
 
         regex = "^[a-zA-Zа-яА-ЯёЁ]+$"
         pattern = re.compile(regex)
 
         if password1 == password2:
-            if pattern.search(str(first_name)) is not None and pattern.search(str(last_name)) is not None:
-                if CustomUser.objects.filter(username=username).exists():
-                    messages.info(request, 'Username Taken')
-                    return redirect('account_register')
-                elif CustomUser.objects.filter(email=email).exists():
-                    messages.info(request, 'Email Taken')
-                    return redirect('account_register')
-                else:
-                    user = CustomUser.objects.create_user(username=username, email=email, first_name=first_name, last_name=last_name, age=age, gender=gender, phone_number=phone_number, password=password1)
-                    user.save()
-                    profile = ProfileSettings.objects.create(user=user, profile_avatar='', entry_draft='')
-                    profile.save()
-                    login_user = authenticate(username=username, password=password1)
-                    login(request, login_user)
-
-            else:
-                messages.info(request, 'First name or Last name is invalid!')
+            if CustomUser.objects.filter(username=username).exists():
+                messages.info(request, 'Username Taken')
                 return redirect('account_register')
+            else:
+                user = CustomUser.objects.create_user(username=username, password=password1)
+                user.save()
+                profile = ProfileSettings.objects.create(user=user, profile_avatar='', entry_draft='')
+                profile.save()
+                login_user = authenticate(username=username, password=password1)
+                login(request, login_user)
         else:
             messages.info(request, 'Password not matching')
             return redirect('account_register')
