@@ -150,70 +150,84 @@ def LoginPage():
             return displayMenu()
 
     def newUser():
-        """ Create a new user (operation #1) """
-        create_email = input('\nCreate user email address: \n')
-        test = False
 
-        for user in user_data:
-            if create_email in user['email']:
-                print('\n********** Email address already exists: ' + create_email + ' **********')
-                return displayUserMenu()
-        create_password = input('\nCreate user password: (password must have greater than 8 and less than 20)\n')
-        if 8 <= len(create_password) <= 20:
-            test = True
-        else:
-            print('\n********** Password must be greater than 8 and less than 20!!! **********')
-            create_password = input('\nCreate user password: \n')
-        create_name = input('\nCreate user name: \n')
-        if create_name.isalpha():
-            test = True
-        else:
-            print('\n********** Enter your name correctly!!! **********')
-            create_name = input('\nCreate user name: \n')
-        create_surname = input('\nCreate user surname: \n')
-        if create_surname.isalpha():
-            test = True
-        else:
-            print('\n********** Enter your surname correctly!!! **********')
-            create_surname = input('\nCreate user surname: \n')
-        create_age = input('\nCreate user age: \n')
-        if create_age.isnumeric():
-            test = True
-        else:
-            print('\n********** Age must be number!!! **********')
-            create_age = input('\nCreate user age: \n')
-        create_gender = input('\nCreate user gender: (Gender must be Male or Female)\n')
-        if create_gender in 'Male' or create_gender in 'Female':
-            test = True
-        else:
-            print('\n********** Gender must be Male or Female!!! **********')
-            create_gender = input('\nCreate user gender: \n')
-        create_phone_number = input('\nCreate user phone number: \n')
-        if create_phone_number.isdigit() or create_phone_number.isnumeric():
-            test = True
-        else:
-            print('\n********** Phone number must be a number!!! **********')
-            create_phone_number = input('\nCreate user phone number: \n')
-        if test:
-            user_created_data = datetime.datetime.now()
-            print(
-                '\n******************\nUser created: \n' + f'Email address: {create_email}' + "\n" + f'Password: {create_password}' + "\n" + f'Name: {create_name}' + "\n" + f'Surname: {create_surname}' + "\n" + f'Age: {create_age}' + "\n" + f'Gender: {create_gender}' + "\n" + f'Phone number: {create_phone_number}' + '\n\n' + f'User created data: {user_created_data}' + '\n' + '*******************')
+        """ Register New User """
 
-            create_user = {
-                'email': create_email,
-                'password': create_password,
-                'name': create_name,
-                'surname': create_surname,
-                'age': create_age,
-                'gender': create_gender,
-                'phone_number': create_phone_number,
-                'user_created_data': user_created_data,
-                'subscriptions': [],
-                'friends': [],
-                'blocked_users': []
-            }
-            user_data.append(create_user)
-            return displayMenu()
+        print('\n**************************\n'
+              '******** REGISTER ********\n'
+              '**************************')
+
+        while True:
+            new_email = input('\nEmail: ')
+            for user in user_data:
+                if new_email in user['email']:
+                    print('\nEmail address already exists!\n')
+                    return displayUserMenu()
+            if new_email.__contains__('@'):
+                break
+            else:
+                print('Enter a valid, existing mail!')
+
+        while True:
+            new_password = input('\nPassword (must have greater than 8!): ')
+            if len(new_password) < 8:
+                print('Uwyy! Password you entered is less than 8')
+            else:
+                break
+
+        while True:
+            new_name = input('\nName: ')
+            if new_name.isalpha():
+                break
+            else:
+                print('The Name must contain only letters!))')
+
+        while True:
+            new_surname = input('\nSurname: ')
+            if new_surname.isalpha():
+                break
+            else:
+                print('The Surname must contain only letters!')
+
+        while True:
+            new_age = input('\nAge: ')
+            if new_age.isnumeric():
+                break
+            else:
+                print('Age must contain only numbers!')
+
+        while True:
+            new_gender = input('\nGender (Male / Female): ')
+            if new_gender == 'Male' or new_gender == 'Female' or new_gender == 'male' or new_gender == 'female':
+                break
+            else:
+                print("Male or Female! There shouldn't be any other genders!!!")
+
+        while True:
+            new_phone_number = input('\nPhone number (+7 (XXX) XXX XX-XX): ')
+            if len(new_phone_number) >= 10:
+                break
+            else:
+                print("Enter your phone number instead of X!")
+        user_created_data = datetime.datetime.now()
+        print(
+            '\n******************\nUser created: \n' + f'Email address: {new_email}' + "\n" + f'Password: {new_password}' + "\n" + f'Name: {new_name}' + "\n" + f'Surname: {new_surname}' + "\n" + f'Age: {new_age}' + "\n" + f'Gender: {new_gender}' + "\n" + f'Phone number: {new_phone_number}' + '\n\n' + f'User created data: {user_created_data}' + '\n' + '*******************')
+
+        create_user = {
+            'email': new_email,
+            'password': new_password,
+            'name': new_name,
+            'surname': new_surname,
+            'age': new_age,
+            'gender': new_gender,
+            'phone_number': new_phone_number,
+            'user_created_data': user_created_data,
+            'subscriptions': [],
+            'friends': [],
+            'blocked_users': []
+        }
+        user_data.append(create_user)
+        return displayMenu()
 
     def oldUser():
         """ Login to account """
