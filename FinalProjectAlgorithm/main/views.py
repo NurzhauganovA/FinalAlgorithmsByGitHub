@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
 from post.models import Post
 
+import datetime
+from datetime import date, timedelta
+
 
 def MainPage(request):
     return redirect('account_login')
@@ -23,17 +26,35 @@ class HomePage(ListView):
 
 
 def PopularPosts(request):
+    posts = Post.objects.all()
 
     context = {
-
+        'posts': posts
     }
 
     return render(request, 'post/popular_posts.html', context)
 
 
 def FreshPosts(request):
-    return render(request, 'post/fresh_posts.html')
+
+    current_date = datetime.datetime.today()
+    ago_date = current_date - timedelta(days=7)
+
+    posts = Post.objects.all().filter(date_created__gte=ago_date)
+
+    context = {
+        'posts': posts
+    }
+
+    return render(request, 'post/fresh_posts.html', context)
 
 
 def MySubscription(request):
-    return render(request, 'post/my_subscription.html')
+
+    posts = Post.objects.all()
+
+    context = {
+        'posts': posts
+    }
+
+    return render(request, 'post/my_subscription.html', context)

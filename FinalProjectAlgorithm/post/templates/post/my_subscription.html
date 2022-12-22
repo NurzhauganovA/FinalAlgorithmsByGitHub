@@ -6,6 +6,37 @@
 
 {% block content %}
 
-
+    <div class="section_post_container">
+        {% for post in posts %}
+            <div class="section_get_post_container">
+                <div class="post_container_header_block">
+                    <div class="post_header_main_info">
+                        <a href="{% url 'detail_category_post' post.category.id %}" class="post_header_category_block">
+                            <div class="post_category_image" style="background-image: url('{{ post.category.category_image.url }}')"></div>
+                            <span>{{ post.category.title }}</span>
+                        </a>
+                        <a href="" class="post_header_author_block">
+                            <span>{{ post.author.first_name }} {{ post.author.last_name }}</span>
+                        </a>
+                        <div class="post_header_time_duration_block">
+                            <span>{{ post.date_created|date:"h:m, M d, Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="post_container_text_block">
+                    <h1><a href="{% url 'detail_post' post.id %}">{{ post.title }}</a></h1>
+                    <p>{{ post.description|slice:"200" }}{% if post.description|length > 200 %}...{% endif %}</p>
+                </div>
+                <div class="post_container_post_image_block">
+                    <a href="{% url 'detail_post' post.id %}"><img src="{{ post.post_image.url }}" alt="{{ post.category.category_image.title }}"></a>
+                </div>
+                <div class="post_container_footer_block">
+                    <div class="post_footer_comment">
+                        <span>{{ post.author.username }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 
 {% endblock %}

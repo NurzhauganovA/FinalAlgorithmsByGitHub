@@ -25,6 +25,7 @@ class Post(models.Model):
     date_created = models.DateTimeField('Post date created', auto_now_add=True)
     like_post = models.ManyToManyField(CustomUser, verbose_name='Do you like this post?', blank=True, null=True, related_name='like_post')
     view_post = models.ManyToManyField(CustomUser, verbose_name='You viewed this post', blank=True, null=True, related_name='view_post')
+    subscribe_author = models.ManyToManyField(CustomUser, verbose_name='Do you subscribe for author this post?', blank=True, null=True, related_name='subscribe_author')
 
     def total_likes(self):
         return self.like_post.count()

@@ -8,22 +8,57 @@ from django.http import HttpResponseRedirect
 
 from django.urls import reverse, reverse_lazy
 
+from .forms import CommentForm
+from django.views.generic.edit import FormMixin
+
 
 def CreatePost(request):
     pass
 
 
-class PostDetailView(DetailView):
+class PostDetailView(FormMixin, DetailView):
     model = Post
     template_name = 'post/post_detail.html'
     context_object_name = 'post'
+    form_class = CommentForm
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('detail_post', kwargs={'pk': self.get_object().id})
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.post_name = self.get_object()
+        self.object.author = self.request.user
+        self.object.save()
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(PostDetailView, self).get_context_data(**kwargs)
 
+        stuff = get_object_or_404(Post, id=self.kwargs['pk'])
+        total_likes = stuff.total_likes()
+
+        liked = False
+        if stuff.like_post.filter(id=self.request.user.id).exists():
+            liked = True
+
+        subscribed = False
+        if stuff.subscribe_author.filter(id=self.request.user.id).exists():
+            subscribed = True
+
         post = get_object_or_404(Post, id=self.object.id)
         context['profiles'] = CustomUser.objects.filter(username=post.author.username)
         context['all_posts'] = Post.objects.exclude(id=post.id)
+        context['total_likes'] = total_likes
+        context['liked'] = liked
+        context['subscribed'] = subscribed
 
         return context
 
@@ -40,7 +75,7 @@ class CategoryPostDetailView(DetailView):
 
 
 def LikePost(request, pk):
-    post_like = get_object_or_404(Post, id=request.POST.get('post_id'))
+    post_like = get_object_or_404(Post, id=request.POST.get('detail_post_like'))
     liked_post = False
     if post_like.like_post.filter(id=request.user.id).exists():
         post_like.like_post.remove(request.user)
@@ -52,6 +87,12 @@ def LikePost(request, pk):
 
 
 def SubscribeAuthor(request, pk):
-    subscribe_author = get_object_or_404(SubscribeToAuthorOfPost, id=request.POST.get('post_author_id'))
+    subscribe_author = get_object_or_404(Post, id=request.POST.get('post_author_id'))
     subscribed_author = False
-    return HttpResponseRedirect(reverse('home', args=[str(pk)]))
+    if subscribe_author.subscribe_author.filter(id=request.user.id).exists():
+        subscribe_author.subscribe_author.remove(request.user)
+        subscribed_author = False
+    else:
+        subscribe_author.subscribe_author.add(request.user)
+        subscribed_author = True
+    return HttpResponseRedirect(reverse('detail_post', args=[str(pk)]))
